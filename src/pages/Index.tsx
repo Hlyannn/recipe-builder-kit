@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BookOpen, Search } from "lucide-react";
 import CategoryFilter from "@/components/CategoryFilter";
 import RecipeCard from "@/components/RecipeCard";
+import ThemeToggle from "@/components/ThemeToggle";
 import { recipes, categories } from "@/data/recipes";
 
 const Index = () => {
@@ -10,8 +11,26 @@ const Index = () => {
 
   const filteredRecipes = recipes.filter((recipe) => {
     const matchesCategory = activeCategory === "All" || recipe.category === activeCategory;
-    const matchesSearch = recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      recipe.ingredients.some(ing => ing.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    // Handle search - check if ingredients are grouped or simple
+    let matchesSearch = recipe.title.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (searchQuery && recipe.ingredients.length > 0) {
+      // Check if ingredients are grouped (have 'label' property)
+      if ('label' in recipe.ingredients[0]) {
+        // Grouped ingredients - flatten and search
+        const allIngredients = (recipe.ingredients as Array<{ label?: string; ingredients: Array<{ amount: string; name: string }> }>)
+          .flatMap(group => group.ingredients);
+        matchesSearch = matchesSearch || allIngredients.some(ing => 
+          ing.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      } else {
+        // Simple ingredients array
+        matchesSearch = matchesSearch || (recipe.ingredients as Array<{ amount: string; name: string }>)
+          .some(ing => ing.name.toLowerCase().includes(searchQuery.toLowerCase()));
+      }
+    }
+    
     return matchesCategory && matchesSearch;
   });
 
@@ -20,7 +39,7 @@ const Index = () => {
       {/* Simple Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="flex items-center justify-center h-16 md:h-20">
+          <div className="flex items-center justify-between h-16 md:h-20">
             <a href="/" className="flex items-center gap-3 group">
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center transition-transform group-hover:scale-105">
                 <BookOpen className="w-5 h-5 text-primary-foreground" />
@@ -29,6 +48,7 @@ const Index = () => {
                 Recipe Guide
               </span>
             </a>
+            <ThemeToggle />
           </div>
         </div>
       </header>

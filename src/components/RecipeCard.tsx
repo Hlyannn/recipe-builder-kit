@@ -5,6 +5,11 @@ interface Ingredient {
   name: string;
 }
 
+interface IngredientGroup {
+  label?: string;
+  ingredients: Ingredient[];
+}
+
 interface Recipe {
   id: number;
   title: string;
@@ -13,7 +18,7 @@ interface Recipe {
   prepTime: string;
   servings: string;
   image: string;
-  ingredients: Ingredient[];
+  ingredients: Ingredient[] | IngredientGroup[];
   instructions: string[];
   tips?: string;
 }
@@ -53,26 +58,8 @@ const RecipeCard = ({ recipe, index }: RecipeCardProps) => {
           {recipe.title}
         </h3>
         
-        {/* Ingredients */}
-        <div className="mb-6">
-          <h4 className="font-heading text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
-            Ingredients
-          </h4>
-          <ul className="space-y-0">
-            {recipe.ingredients.map((ingredient, i) => (
-              <li key={i} className="ingredient-item">
-                <span className="font-medium text-primary min-w-[80px]">
-                  {ingredient.amount}
-                </span>
-                <span className="text-foreground">{ingredient.name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        
         {/* Instructions */}
-        <div>
+        <div className="mb-6">
           <h4 className="font-heading text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-herb"></span>
             Instructions
@@ -85,6 +72,39 @@ const RecipeCard = ({ recipe, index }: RecipeCardProps) => {
               </li>
             ))}
           </ol>
+        </div>
+        
+        {/* Ingredients */}
+        <div>
+          <h4 className="font-heading text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent"></span>
+            Ingredients
+          </h4>
+          <ul className="space-y-0">
+            {Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0 && 'label' in recipe.ingredients[0] ? (
+              // Flatten grouped ingredients into a simple list
+              (recipe.ingredients as IngredientGroup[]).flatMap((group) => 
+                group.ingredients.map((ingredient, i) => (
+                  <li key={i} className="ingredient-item">
+                    <span className="font-medium text-primary min-w-[80px]">
+                      {ingredient.amount}
+                    </span>
+                    <span className="text-foreground">{ingredient.name}</span>
+                  </li>
+                ))
+              )
+            ) : (
+              // Simple ingredients list
+              (recipe.ingredients as Ingredient[]).map((ingredient, i) => (
+                <li key={i} className="ingredient-item">
+                  <span className="font-medium text-primary min-w-[80px]">
+                    {ingredient.amount}
+                  </span>
+                  <span className="text-foreground">{ingredient.name}</span>
+                </li>
+              ))
+            )}
+          </ul>
         </div>
       </div>
     </article>
