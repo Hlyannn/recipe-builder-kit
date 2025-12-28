@@ -37,27 +37,21 @@ const RecipeCard = ({ recipe, index }: RecipeCardProps) => {
       </div>
       
       <div className="p-6 md:p-8">
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
           <span className="badge-category">{recipe.category}</span>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4" />
-              {recipe.prepTime}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Users className="w-4 h-4" />
-              {recipe.servings}
-            </span>
-          </div>
+          <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Clock className="w-4 h-4" />
+            {recipe.prepTime}
+          </span>
+          <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Users className="w-4 h-4" />
+            {recipe.servings}
+          </span>
         </div>
         
-        <h3 className="font-heading text-2xl md:text-3xl font-semibold mb-3 text-foreground">
+        <h3 className="font-heading text-2xl md:text-3xl font-semibold mb-5 text-foreground">
           {recipe.title}
         </h3>
-        
-        <p className="text-muted-foreground mb-6 leading-relaxed">
-          {recipe.description}
-        </p>
         
         {/* Ingredients */}
         <div className="mb-6">
