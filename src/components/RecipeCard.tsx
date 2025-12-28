@@ -72,7 +72,7 @@ const RecipeCard = ({ recipe, index }: RecipeCardProps) => {
         </div>
         
         {/* Instructions */}
-        <div className="mb-6">
+        <div>
           <h4 className="font-heading text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-herb"></span>
             Instructions
@@ -86,18 +86,6 @@ const RecipeCard = ({ recipe, index }: RecipeCardProps) => {
             ))}
           </ol>
         </div>
-        
-        {/* Tips */}
-        {recipe.tips && (
-          <div className="bg-secondary/50 rounded-xl p-4 border border-border/50">
-            <h4 className="font-heading text-sm font-semibold mb-2 text-accent flex items-center gap-2">
-              ✨ Pro Tip
-            </h4>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {recipe.tips}
-            </p>
-          </div>
-        )}
       </div>
     </article>
   );
