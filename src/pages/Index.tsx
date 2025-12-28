@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Search } from "lucide-react";
 import CategoryFilter from "@/components/CategoryFilter";
 import RecipeCard from "@/components/RecipeCard";
 import { recipes, categories } from "@/data/recipes";
 
 const Index = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredRecipes = activeCategory === "All"
-    ? recipes
-    : recipes.filter((recipe) => recipe.category === activeCategory);
+  const filteredRecipes = recipes.filter((recipe) => {
+    const matchesCategory = activeCategory === "All" || recipe.category === activeCategory;
+    const matchesSearch = recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      recipe.ingredients.some(ing => ing.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,9 +40,20 @@ const Index = () => {
             <h1 className="section-title text-foreground mb-4 opacity-0 animate-fade-up">
               Recipe Collection
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto opacity-0 animate-fade-up stagger-1">
-              Clear instructions, precise measurements, and tips for perfect results.
-            </p>
+            
+            {/* Search Bar */}
+            <div className="max-w-md mx-auto mt-6 opacity-0 animate-fade-up stagger-1">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search recipes or ingredients..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-full text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                />
+              </div>
+            </div>
           </div>
           
           <CategoryFilter
